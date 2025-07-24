@@ -41,7 +41,7 @@ lib/
 │   └── repositories/      # Repository interfaces
 ├── presentation/           # UI layer
 │   ├── controllers/       # Riverpod providers
-│   ├── pages/            # Application screens
+│   ├── screens/            # Application screens
 │   └── widgets/          # Page-specific widgets
 ├── shared/                 # Shared components
 │   └── widgets/          # Reusable widgets
