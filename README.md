@@ -157,9 +157,9 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## 📞 Contact
 
-- **Developer**: [Your Name]
-- **Email**: [your-email@example.com]
-- **LinkedIn**: [your-linkedin]
+- **Developer**: Érik Restani
+- **Email**: erikeduardorestani@gmail.com
+- **LinkedIn**: https://www.linkedin.com/in/erikrestani
 
 ---
 
