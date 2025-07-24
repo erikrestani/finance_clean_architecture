@@ -96,6 +96,53 @@ To run tests:
 flutter test
 ```
 
+### Running Tests with Coverage
+
+```bash
+# Run tests with coverage
+flutter test --coverage
+
+# Generate HTML coverage report
+genhtml coverage/lcov.info -o coverage/html
+```
+
+### Pre-commit Checks
+
+We provide a script to run all checks locally before committing:
+
+```bash
+# Run all pre-commit checks
+./scripts/pre_commit.sh
+```
+
+This script will:
+- ✅ Get dependencies
+- ✅ Analyze code
+- ✅ Check formatting
+- ✅ Run tests
+- ✅ Generate coverage
+- ✅ Build Android debug version
+- ✅ Attempt web build
+
+## 🚀 CI/CD
+
+This project uses GitHub Actions for Continuous Integration and Continuous Deployment.
+
+### Workflows
+
+- **CI/CD Pipeline**: Runs on main branch pushes and PRs
+- **Development Checks**: Runs on feature branches and PRs
+
+### Features
+
+- ✅ Automated testing and code analysis
+- ✅ Build verification for Android and iOS
+- ✅ Test coverage reporting with Codecov
+- ✅ Automated deployment to Firebase App Distribution (Android)
+- ✅ Automated deployment to TestFlight (iOS)
+
+For detailed CI/CD documentation, see [docs/CI_CD.md](docs/CI_CD.md).
+
 ## 📄 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
