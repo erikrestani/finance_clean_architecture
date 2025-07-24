@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+class WalletScreen extends StatelessWidget {
+  const WalletScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -9,9 +9,9 @@ class DashboardPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Dashboard', style: Theme.of(context).textTheme.displaySmall),
+          Text('Wallet', style: Theme.of(context).textTheme.displaySmall),
           const SizedBox(height: 24),
-          Text('Financial summary, balance, expenses, income and shortcuts.'),
+          Text('Account control, balance and manual transactions.'),
         ],
       ),
     );

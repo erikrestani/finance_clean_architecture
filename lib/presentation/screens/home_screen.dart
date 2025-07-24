@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-import 'dashboard_page.dart';
-import 'wallet_page.dart';
-import 'report_page.dart';
-import 'tips_page.dart';
+import 'dashboard_screen.dart';
+import 'wallet_screen.dart';
+import 'report_screen.dart';
+import 'tips_screen.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
   static const List<Widget> _screens = [
-    DashboardPage(),
-    WalletPage(),
-    ReportPage(),
-    TipsPage(),
+    DashboardScreen(),
+    WalletScreen(),
+    ReportScreen(),
+    TipsScreen(),
   ];
 
   @override

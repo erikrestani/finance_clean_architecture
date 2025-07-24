@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:finance_clean_architecture/presentation/pages/login_page.dart';
+import 'package:finance_clean_architecture/presentation/screens/login_screen.dart';
 
 void main() {
   group('LoginPage', () {
@@ -10,13 +10,13 @@ void main() {
       await tester.pumpWidget(
         const ProviderScope(
           child: MaterialApp(
-            home: LoginPage(),
+            home: LoginScreen(),
           ),
         ),
       );
 
       // Assert - Verifica se os widgets principais estão presentes
-      expect(find.byType(LoginPage), findsOneWidget);
+      expect(find.byType(LoginScreen), findsOneWidget);
       expect(find.byType(Scaffold), findsOneWidget);
       expect(find.byType(SafeArea), findsOneWidget);
       expect(find.byType(SingleChildScrollView), findsOneWidget);
@@ -27,7 +27,7 @@ void main() {
       await tester.pumpWidget(
         const ProviderScope(
           child: MaterialApp(
-            home: LoginPage(),
+            home: LoginScreen(),
           ),
         ),
       );
@@ -42,7 +42,7 @@ void main() {
       await tester.pumpWidget(
         const ProviderScope(
           child: MaterialApp(
-            home: LoginPage(),
+            home: LoginScreen(),
           ),
         ),
       );

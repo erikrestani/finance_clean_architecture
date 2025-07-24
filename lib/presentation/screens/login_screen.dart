@@ -7,8 +7,8 @@ import '../widgets/login_form_container.dart';
 import '../../shared/widgets/app_footer.dart';
 import '../controllers/auth_controller.dart';
 
-class LoginPage extends ConsumerWidget {
-  const LoginPage({super.key});
+class LoginScreen extends ConsumerWidget {
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
