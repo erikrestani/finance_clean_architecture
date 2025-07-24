@@ -32,6 +32,16 @@ if ! command -v flutter &> /dev/null; then
     exit 1
 fi
 
+# Check Flutter version
+echo "🔍 Checking Flutter version..."
+FLUTTER_VERSION=$(flutter --version | grep -o 'Flutter [0-9]\+\.[0-9]\+\.[0-9]\+' | head -1)
+echo "Current Flutter version: $FLUTTER_VERSION"
+
+# Check if version is compatible (should be 3.32.x or higher)
+if [[ ! "$FLUTTER_VERSION" =~ Flutter\ 3\.(3[2-9]|[4-9][0-9]|[0-9]{2,}) ]]; then
+    print_warning "Flutter version might be outdated. Recommended: 3.32.7 or higher"
+fi
+
 # Get Flutter dependencies
 echo "📦 Getting dependencies..."
 flutter pub get

@@ -66,7 +66,7 @@ lib/
 
 ### Prerequisites
 
-- Flutter SDK (version 3.8.0 or higher)
+- Flutter SDK (version 3.32.7 or higher)
 - Dart SDK
 - Android Studio / Xcode (for mobile development)
 
