@@ -164,14 +164,21 @@ This project uses GitHub Actions for Continuous Integration and Continuous Deplo
 - ✅ Automated testing and code analysis
 - ✅ Build verification for Android and iOS
 - ✅ Test coverage reporting with Codecov
-- ✅ Automated deployment to Firebase App Distribution (Android)
-- ✅ Automated deployment to TestFlight (iOS)
+- ✅ Build artifacts generation for manual distribution
 
 For detailed CI/CD documentation, see [docs/CI_CD.md](docs/CI_CD.md).
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### What this means:
+- ✅ **Free to use**: You can use this code for personal and commercial projects
+- ✅ **Modify**: You can modify and adapt the code
+- ✅ **Distribute**: You can distribute copies of the code
+- ✅ **Attribution**: You must include the original license and copyright notice
+
+For more information about the MIT License, visit: https://opensource.org/licenses/MIT
 
 ## 🤝 Contributing
 
