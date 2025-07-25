@@ -23,11 +23,7 @@ class LoginHeader extends StatelessWidget {
               ),
             ],
           ),
-          child: const Icon(
-            Icons.lock_outline,
-            size: 40,
-            color: Colors.white,
-          ),
+          child: const Icon(Icons.lock_outline, size: 40, color: Colors.white),
         ),
         const SizedBox(height: AppConstants.paddingLarge),
         Text(
@@ -50,4 +46,4 @@ class LoginHeader extends StatelessWidget {
       ],
     );
   }
-} 
+}

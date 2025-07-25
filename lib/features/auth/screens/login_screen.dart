@@ -12,33 +12,8 @@ class LoginScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authControllerProvider);
-    
-    authState.when(
-      data: (user) {
-        if (user != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Welcome, ${user.name}!'),
-                backgroundColor: AppTheme.secondaryColor,
-              ),
-            );
-          });
-        }
-      },
-      loading: () {},
-      error: (error, stackTrace) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error: ${error.toString()}'),
-              backgroundColor: AppTheme.errorColor,
-            ),
-          );
-        });
-      },
-    );
+    final authController = ref.read(authControllerProvider.notifier);
+    authController.showWelcomeMessage(context);
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
@@ -47,9 +22,10 @@ class LoginScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(AppConstants.paddingXLarge),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height - 
-                        MediaQuery.of(context).padding.top - 
-                        MediaQuery.of(context).padding.bottom,
+              minHeight:
+                  MediaQuery.of(context).size.height -
+                  MediaQuery.of(context).padding.top -
+                  MediaQuery.of(context).padding.bottom,
             ),
             child: IntrinsicHeight(
               child: Column(
@@ -68,4 +44,4 @@ class LoginScreen extends ConsumerWidget {
       ),
     );
   }
-} 
+}

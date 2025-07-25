@@ -12,7 +12,7 @@ class AppFooter extends StatelessWidget {
         const Divider(),
         const SizedBox(height: AppConstants.paddingMedium),
         Text(
-          '© 2024 ${AppConstants.appName}. All rights reserved.',
+          '© 2025 ${AppConstants.appName}. All rights reserved.',
           style: const TextStyle(
             fontSize: 12,
             color: AppTheme.textSecondaryColor,
@@ -22,4 +22,4 @@ class AppFooter extends StatelessWidget {
       ],
     );
   }
-} 
+}

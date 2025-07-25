@@ -28,21 +28,21 @@ class _LoginFormState extends ConsumerState<LoginForm> {
 
   void _handleLogin() {
     if (_formKey.currentState!.validate()) {
-      ref.read(authControllerProvider.notifier).login(
-        _emailController.text.trim(),
-        _passwordController.text,
-      );
+      ref
+          .read(authControllerProvider.notifier)
+          .login(_emailController.text.trim(), _passwordController.text);
     }
   }
 
   String? _validateEmail(String? value) => FormValidators.validateEmail(value);
 
-  String? _validatePassword(String? value) => FormValidators.validatePassword(value);
+  String? _validatePassword(String? value) =>
+      FormValidators.validatePassword(value);
 
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
-    
+
     return Form(
       key: _formKey,
       child: Column(
@@ -66,7 +66,9 @@ class _LoginFormState extends ConsumerState<LoginForm> {
             prefixIcon: const Icon(Icons.lock_outlined),
             suffixIcon: IconButton(
               icon: Icon(
-                _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                _obscurePassword
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
               ),
               onPressed: () {
                 setState(() {
@@ -79,8 +81,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
-              onPressed: () {
-              },
+              onPressed: () {},
               child: Text(AppConstants.forgotPasswordText),
             ),
           ),
@@ -93,8 +94,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
           const SizedBox(height: AppConstants.paddingLarge),
           Center(
             child: TextButton(
-              onPressed: () {
-              },
+              onPressed: () {},
               child: Text(AppConstants.signUpText),
             ),
           ),
@@ -102,4 +102,4 @@ class _LoginFormState extends ConsumerState<LoginForm> {
       ),
     );
   }
-} 
+}

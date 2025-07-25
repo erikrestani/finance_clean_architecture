@@ -3,7 +3,6 @@ import '../entities/financial_summary.dart';
 import 'finance_repository.dart';
 
 class FinanceRepositoryImpl implements FinanceRepository {
-  // Mock data for demonstration
   final List<Expense> _expenses = [
     Expense(
       id: '1',
@@ -51,32 +50,30 @@ class FinanceRepositoryImpl implements FinanceRepository {
 
   @override
   Future<FinancialSummary> getFinancialSummary() async {
-    await Future.delayed(const Duration(milliseconds: 500)); // Simulate API call
-    
-    final totalExpenses = _expenses.fold(0.0, (sum, expense) => sum + expense.amount);
-    final totalIncome = 5000.0; // Mock income
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    final totalExpenses = _expenses.fold(
+      0.0,
+      (sum, expense) => sum + expense.amount,
+    );
+    final totalIncome = 5000.0;
     final savings = _expenses
         .where((e) => e.category == ExpenseCategory.savings)
         .fold(0.0, (sum, expense) => sum + expense.amount);
-    
-    // Calculate potential savings (reduce leisure expenses by 50%)
+
     final leisureExpenses = _expenses
         .where((e) => e.category == ExpenseCategory.leisure)
         .fold(0.0, (sum, expense) => sum + expense.amount);
     final potentialSavings = leisureExpenses * 0.5;
-    
-    // Group expenses by category
+
     final expensesByCategory = <ExpenseCategory, double>{};
     for (final expense in _expenses) {
-      expensesByCategory[expense.category] = 
+      expensesByCategory[expense.category] =
           (expensesByCategory[expense.category] ?? 0) + expense.amount;
     }
-    
-    // Get recent expenses (last 5)
-    final recentExpenses = _expenses
-        .take(5)
-        .toList();
-    
+
+    final recentExpenses = _expenses.take(5).toList();
+
     return FinancialSummary(
       totalExpenses: totalExpenses,
       totalIncome: totalIncome,
@@ -119,4 +116,4 @@ class FinanceRepositoryImpl implements FinanceRepository {
     await Future.delayed(const Duration(milliseconds: 200));
     _expenses.removeWhere((expense) => expense.id == id);
   }
-} 
+}

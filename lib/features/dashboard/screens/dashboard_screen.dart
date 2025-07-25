@@ -67,8 +67,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               Icons.person_outline_rounded,
               color: AppTheme.primaryLightColor,
             ),
-            onPressed: () {
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -84,9 +83,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         backgroundColor: AppTheme.surfaceColor,
         selectedItemColor: AppTheme.primaryColor,
         unselectedItemColor: AppTheme.textSecondaryColor,
-        selectedLabelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-          fontWeight: FontWeight.w600,
-        ),
+        selectedLabelStyle: Theme.of(
+          context,
+        ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
         unselectedLabelStyle: Theme.of(context).textTheme.bodySmall,
         items: const [
           BottomNavigationBarItem(
@@ -109,8 +108,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       ),
     );
   }
-
-
 }
 
 class DashboardContent extends ConsumerWidget {
@@ -123,25 +120,19 @@ class DashboardContent extends ConsumerWidget {
     return dashboardState.when(
       data: (summary) => _buildDashboardContent(context, summary),
       loading: () => const Center(
-        child: CircularProgressIndicator(
-          color: AppTheme.primaryColor,
-        ),
+        child: CircularProgressIndicator(color: AppTheme.primaryColor),
       ),
       error: (error, stackTrace) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: AppTheme.errorColor,
-            ),
+            Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
             SizedBox(height: AppConstants.paddingLarge),
             Text(
               'Error loading dashboard',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: AppTheme.errorColor,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(color: AppTheme.errorColor),
             ),
             SizedBox(height: AppConstants.paddingMedium),
             ElevatedButton(
@@ -162,32 +153,23 @@ class DashboardContent extends ConsumerWidget {
 
   Widget _buildDashboardContent(BuildContext context, summary) {
     return RefreshIndicator(
-      onRefresh: () async {
-        // Refresh data
-      },
+      onRefresh: () async {},
       color: AppTheme.primaryColor,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppConstants.paddingMedium),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Expense Summary Cards
             ExpenseSummaryCard(summary: summary),
             SizedBox(height: AppConstants.paddingLarge),
-            
-            // Savings Insight
             SavingsInsightCard(summary: summary),
             SizedBox(height: AppConstants.paddingLarge),
-            
-            // Category Expenses
             CategoryExpenseCard(summary: summary),
             SizedBox(height: AppConstants.paddingLarge),
-            
-            // Recent Expenses
             RecentExpensesCard(summary: summary),
           ],
         ),
       ),
     );
   }
-} 
+}

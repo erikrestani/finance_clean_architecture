@@ -8,11 +8,12 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<User> login(LoginCredentials credentials) async {
     await Future.delayed(const Duration(seconds: 2));
-    
-    if (credentials.email == 'teste@teste.com' && credentials.password == '123456') {
+
+    if (credentials.email == 'teste@teste.com' &&
+        credentials.password == '123456') {
       _currentUser = const User(
         id: '1',
-        email: 'teste@teste.com',
+        email: 'test@test.com',
         name: 'Test User',
       );
       return _currentUser!;
@@ -36,4 +37,4 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<bool> isAuthenticated() async {
     return _currentUser != null;
   }
-} 
+}

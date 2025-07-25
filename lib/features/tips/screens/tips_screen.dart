@@ -16,4 +16,4 @@ class TipsScreen extends StatelessWidget {
       ),
     );
   }
-} 
+}

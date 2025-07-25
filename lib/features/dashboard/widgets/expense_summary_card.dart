@@ -6,10 +6,7 @@ import '../../../../domain/entities/financial_summary.dart';
 class ExpenseSummaryCard extends StatelessWidget {
   final FinancialSummary summary;
 
-  const ExpenseSummaryCard({
-    super.key,
-    required this.summary,
-  });
+  const ExpenseSummaryCard({super.key, required this.summary});
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +52,12 @@ class ExpenseSummaryCard extends StatelessWidget {
                 context,
                 'Balance',
                 '\$${summary.balance.toStringAsFixed(2)}',
-                summary.balance >= 0 ? AppTheme.secondaryColor : AppTheme.errorColor,
-                summary.balance >= 0 ? Icons.account_balance_wallet : Icons.warning,
+                summary.balance >= 0
+                    ? AppTheme.secondaryColor
+                    : AppTheme.errorColor,
+                summary.balance >= 0
+                    ? Icons.account_balance_wallet
+                    : Icons.warning,
               ),
             ),
             const SizedBox(width: AppConstants.paddingMedium),
@@ -124,4 +125,4 @@ class ExpenseSummaryCard extends StatelessWidget {
       ),
     );
   }
-} 
+}

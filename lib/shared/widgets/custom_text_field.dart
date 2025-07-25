@@ -44,10 +44,7 @@ class CustomTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null) ...[
-          Text(
-            label!,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          Text(label!, style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: AppConstants.paddingSmall),
         ],
         TextFormField(
@@ -71,4 +68,4 @@ class CustomTextField extends StatelessWidget {
       ],
     );
   }
-} 
+}

@@ -5,11 +5,7 @@ import 'core/navigation/auth_gate.dart';
 import 'core/navigation/app_router.dart';
 
 void main() {
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
@@ -18,7 +14,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
-              title: 'Finance App',
+      title: 'Finance App',
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
       onGenerateRoute: AppRouter.generateRoute,
@@ -26,4 +22,3 @@ class MyApp extends ConsumerWidget {
     );
   }
 }
-

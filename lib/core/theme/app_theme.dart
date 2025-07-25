@@ -103,10 +103,7 @@ class AppTheme {
         horizontal: AppConstants.paddingMedium,
         vertical: AppConstants.paddingMedium,
       ),
-      hintStyle: GoogleFonts.inter(
-        fontSize: 16,
-        color: textSecondaryColor,
-      ),
+      hintStyle: GoogleFonts.inter(fontSize: 16, color: textSecondaryColor),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -118,20 +115,14 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppConstants.radiusMedium),
         ),
         minimumSize: const Size(double.infinity, AppConstants.buttonHeight),
-        textStyle: GoogleFonts.inter(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
+        textStyle: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: primaryColor,
-        textStyle: GoogleFonts.inter(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
+        textStyle: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500),
       ),
     ),
   );
-} 
+}

@@ -50,4 +50,4 @@ class DashboardController extends _$DashboardController {
       state = AsyncValue.error(error, stackTrace);
     }
   }
-} 
+}

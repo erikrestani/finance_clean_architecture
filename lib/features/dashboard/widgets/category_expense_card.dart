@@ -7,10 +7,7 @@ import '../../../../domain/entities/expense.dart';
 class CategoryExpenseCard extends StatelessWidget {
   final FinancialSummary summary;
 
-  const CategoryExpenseCard({
-    super.key,
-    required this.summary,
-  });
+  const CategoryExpenseCard({super.key, required this.summary});
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +43,15 @@ class CategoryExpenseCard extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryItem(BuildContext context, ExpenseCategory category, double amount) {
-    final percentage = summary.totalExpenses > 0 
-        ? (amount / summary.totalExpenses) * 100 
+  Widget _buildCategoryItem(
+    BuildContext context,
+    ExpenseCategory category,
+    double amount,
+  ) {
+    final percentage = summary.totalExpenses > 0
+        ? (amount / summary.totalExpenses) * 100
         : 0.0;
-    
+
     return Padding(
       padding: const EdgeInsets.only(bottom: AppConstants.paddingMedium),
       child: Row(
@@ -84,7 +85,9 @@ class CategoryExpenseCard extends StatelessWidget {
                 LinearProgressIndicator(
                   value: percentage / 100,
                   backgroundColor: AppTheme.borderColor,
-                  valueColor: AlwaysStoppedAnimation<Color>(_getCategoryColor(category)),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    _getCategoryColor(category),
+                  ),
                 ),
               ],
             ),
@@ -181,4 +184,4 @@ class CategoryExpenseCard extends StatelessWidget {
         return 'Other';
     }
   }
-} 
+}

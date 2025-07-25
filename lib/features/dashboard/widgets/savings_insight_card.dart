@@ -6,10 +6,7 @@ import '../../../../domain/entities/financial_summary.dart';
 class SavingsInsightCard extends StatelessWidget {
   final FinancialSummary summary;
 
-  const SavingsInsightCard({
-    super.key,
-    required this.summary,
-  });
+  const SavingsInsightCard({super.key, required this.summary});
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +58,9 @@ class SavingsInsightCard extends StatelessWidget {
           const SizedBox(height: AppConstants.paddingSmall),
           Text(
             'by reducing leisure expenses by 50%',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppTheme.textSecondaryColor,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondaryColor),
           ),
           const SizedBox(height: AppConstants.paddingMedium),
           Container(
@@ -98,4 +95,4 @@ class SavingsInsightCard extends StatelessWidget {
       ),
     );
   }
-} 
+}

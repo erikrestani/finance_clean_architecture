@@ -30,10 +30,11 @@ class FinancialSummary {
   }
 
   @override
-  int get hashCode => totalExpenses.hashCode ^ totalIncome.hashCode ^ savings.hashCode;
+  int get hashCode =>
+      totalExpenses.hashCode ^ totalIncome.hashCode ^ savings.hashCode;
 
   @override
   String toString() {
     return 'FinancialSummary(totalExpenses: $totalExpenses, totalIncome: $totalIncome, savings: $savings)';
   }
-} 
+}

@@ -40,4 +40,4 @@ class Expense {
   String toString() {
     return 'Expense(id: $id, title: $title, amount: $amount, category: $category)';
   }
-} 
+}

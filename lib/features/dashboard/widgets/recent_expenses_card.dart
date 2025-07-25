@@ -7,10 +7,7 @@ import '../../../../domain/entities/expense.dart';
 class RecentExpensesCard extends StatelessWidget {
   final FinancialSummary summary;
 
-  const RecentExpensesCard({
-    super.key,
-    required this.summary,
-  });
+  const RecentExpensesCard({super.key, required this.summary});
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +37,7 @@ class RecentExpensesCard extends StatelessWidget {
                   color: AppTheme.textPrimaryColor,
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  // Navigate to expenses list
-                },
-                child: const Text('View All'),
-              ),
+              TextButton(onPressed: () {}, child: const Text('View All')),
             ],
           ),
           const SizedBox(height: AppConstants.paddingMedium),
@@ -123,7 +115,7 @@ class RecentExpensesCard extends StatelessWidget {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date).inDays;
-    
+
     if (difference == 0) {
       return 'Today';
     } else if (difference == 1) {
@@ -203,4 +195,4 @@ class RecentExpensesCard extends StatelessWidget {
         return 'Other';
     }
   }
-} 
+}
