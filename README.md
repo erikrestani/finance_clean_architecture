@@ -38,22 +38,48 @@ lib/
 │   └── utils/             # Utility functions
 ├── domain/                 # Business logic layer
 │   ├── entities/          # Domain entities
-│   └── repositories/      # Repository interfaces
-├── presentation/           # UI layer
-│   ├── controllers/       # Riverpod providers
-│   ├── screens/            # Application screens
-│   └── widgets/          # Page-specific widgets
+│   └── repositories/      # Repository interfaces and implementations
+├── features/               # Feature-based modules
+│   ├── auth/               # Authentication feature
+│   │   ├── controllers/    # Auth state management
+│   │   ├── screens/        # Auth screens (login, register, profile)
+│   │   └── widgets/        # Auth-specific widgets
+│   ├── dashboard/          # Dashboard feature
+│   │   ├── controllers/    # Dashboard state management
+│   │   ├── screens/        # Dashboard screens
+│   │   └── widgets/        # Dashboard-specific widgets
+│   ├── wallet/             # Wallet management feature
+│   │   ├── controllers/    # Wallet state management
+│   │   ├── screens/        # Wallet screens
+│   │   └── widgets/        # Wallet-specific widgets
+│   ├── reports/            # Reports and analytics feature
+│   │   ├── controllers/    # Reports state management
+│   │   ├── screens/        # Reports screens
+│   │   └── widgets/        # Reports-specific widgets
+│   └── tips/               # Financial tips feature
+│       ├── controllers/    # Tips state management
+│       ├── screens/        # Tips screens
+│       └── widgets/        # Tips-specific widgets
 ├── shared/                 # Shared components
-│   └── widgets/          # Reusable widgets
-└── main.dart              # Application entry point
+│   └── widgets/            # Common widgets (AppBar, AppFooter, etc.)
+└── main.dart               # Application entry point
 ```
 
 ### Architecture Layers
 
-1. **Presentation Layer** (`presentation/`): UI components, pages, and state management
+1. **Features Layer** (`features/`): Feature-based modules with screens, controllers, and widgets
 2. **Domain Layer** (`domain/`): Business logic, entities, and repository contracts
 3. **Core Layer** (`core/`): Utilities, constants, and shared configurations
 4. **Shared Layer** (`shared/`): Reusable components across the application
+
+### Feature Organization
+
+Each feature follows a consistent structure:
+- **controllers/**: Riverpod providers for state management
+- **screens/**: Main screens and sub-screens for the feature
+- **widgets/**: Feature-specific reusable widgets
+
+Features are organized by business functionality, not by individual pages. Sub-pages and related functionality are grouped within their respective features.
 
 ### Key Principles
 
