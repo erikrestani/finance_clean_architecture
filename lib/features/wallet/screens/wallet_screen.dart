@@ -135,7 +135,7 @@ class WalletScreen extends ConsumerWidget {
     double amount,
     String description,
   ) {
-    ref.read(walletControllerProvider.notifier).addBalance(accountId, amount);
+    ref.read(walletControllerProvider.notifier).addBalance(accountId, amount, description);
   }
 
   void _subtractBalance(
@@ -147,7 +147,7 @@ class WalletScreen extends ConsumerWidget {
   ) {
     ref
         .read(walletControllerProvider.notifier)
-        .subtractBalance(accountId, amount);
+        .subtractBalance(accountId, amount, description);
   }
 
   void _deleteAccount(BuildContext context, WidgetRef ref, String accountId) {

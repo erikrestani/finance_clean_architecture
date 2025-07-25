@@ -25,12 +25,10 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog> {
   final List<Color> _colorOptions = [
     AppTheme.primaryColor,
     AppTheme.secondaryColor,
-    const Color(0xFF8B5CF6), // Purple
-    const Color(0xFFF59E0B), // Amber
-    const Color(0xFFEF4444), // Red
-    const Color(0xFF10B981), // Green
-    const Color(0xFF3B82F6), // Blue
-    const Color(0xFFEC4899), // Pink
+    const Color(0xFFF59E0B), 
+    const Color(0xFFEF4444), 
+    const Color(0xFF3B82F6), 
+    const Color(0xFFEC4899), 
   ];
 
   final List<IconData> _iconOptions = [
@@ -56,7 +54,7 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog> {
     return AlertDialog(
       title: Row(
         children: [
-          const Expanded(child: Text('Add New Account')),
+          const Expanded(child: Text('New Account')),
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: Icon(

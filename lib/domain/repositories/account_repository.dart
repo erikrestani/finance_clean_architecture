@@ -6,7 +6,7 @@ abstract class AccountRepository {
   Future<Account> createAccount(Account account);
   Future<Account> updateAccount(Account account);
   Future<void> deleteAccount(String id);
-  Future<Account> addBalance(String accountId, double amount);
-  Future<Account> subtractBalance(String accountId, double amount);
+  Future<Account> addBalance(String accountId, double amount, String description);
+  Future<Account> subtractBalance(String accountId, double amount, String description);
   Future<double> getTotalBalance();
 }

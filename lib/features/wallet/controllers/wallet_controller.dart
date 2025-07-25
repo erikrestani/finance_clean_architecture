@@ -43,21 +43,21 @@ class WalletController extends _$WalletController {
     ref.invalidateSelf();
   }
 
-  Future<void> addBalance(String accountId, double amount) async {
-    if (amount <= 0) return;
+          Future<void> addBalance(String accountId, double amount, String description) async {
+          if (amount <= 0) return;
+          
+          final repository = ref.read(accountRepositoryProvider);
+          await repository.addBalance(accountId, amount, description);
+          ref.invalidateSelf();
+        }
 
-    final repository = ref.read(accountRepositoryProvider);
-    await repository.addBalance(accountId, amount);
-    ref.invalidateSelf();
-  }
-
-  Future<void> subtractBalance(String accountId, double amount) async {
-    if (amount <= 0) return;
-
-    final repository = ref.read(accountRepositoryProvider);
-    await repository.subtractBalance(accountId, amount);
-    ref.invalidateSelf();
-  }
+        Future<void> subtractBalance(String accountId, double amount, String description) async {
+          if (amount <= 0) return;
+          
+          final repository = ref.read(accountRepositoryProvider);
+          await repository.subtractBalance(accountId, amount, description);
+          ref.invalidateSelf();
+        }
 
   Future<void> deleteAccount(String accountId) async {
     final repository = ref.read(accountRepositoryProvider);

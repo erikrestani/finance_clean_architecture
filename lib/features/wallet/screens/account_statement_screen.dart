@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../domain/entities/account.dart';
 import '../../../domain/entities/transaction.dart';
+import '../../../domain/repositories/local_storage_repository.dart';
 import '../../../shared/widgets/app_bar.dart';
 
-class AccountStatementScreen extends StatelessWidget {
+class AccountStatementScreen extends ConsumerWidget {
   final Account account;
 
   const AccountStatementScreen({super.key, required this.account});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: CustomAppBar(showBackButton: true),
@@ -90,11 +92,17 @@ class AccountStatementScreen extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                Text(
-                  '${_getMockTransactions().length} transactions',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppTheme.textSecondaryColor,
-                  ),
+                FutureBuilder<List<Transaction>>(
+                  future: LocalStorageRepositoryImpl().getTransactions(account.id),
+                  builder: (context, snapshot) {
+                    final count = snapshot.data?.length ?? 0;
+                    return Text(
+                      '$count transactions',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppTheme.textSecondaryColor,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -106,45 +114,80 @@ class AccountStatementScreen extends StatelessWidget {
   }
 
   Widget _buildTransactionsTable(BuildContext context) {
-    final transactions = _getMockTransactions();
+    return FutureBuilder<List<Transaction>>(
+      future: LocalStorageRepositoryImpl().getTransactions(account.id),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: AppTheme.primaryColor,
+            ),
+          );
+        }
 
-    if (transactions.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.receipt_long_outlined,
-              size: 64,
-              color: AppTheme.textSecondaryColor,
+        if (snapshot.hasError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: AppTheme.errorColor,
+                ),
+                SizedBox(height: AppConstants.paddingMedium),
+                Text(
+                  'Error loading transactions',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: AppTheme.errorColor,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: AppConstants.paddingMedium),
-            Text(
-              'No transactions yet',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: AppTheme.textSecondaryColor,
-              ),
-            ),
-            SizedBox(height: AppConstants.paddingSmall),
-            Text(
-              'Transactions will appear here',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppTheme.textSecondaryColor,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
+          );
+        }
 
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppConstants.paddingMedium,
-      ),
-      itemCount: transactions.length,
-      itemBuilder: (context, index) {
-        final transaction = transactions[index];
-        return _buildTransactionRow(context, transaction);
+        final transactions = snapshot.data ?? [];
+
+        if (transactions.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.receipt_long_outlined,
+                  size: 64,
+                  color: AppTheme.textSecondaryColor,
+                ),
+                SizedBox(height: AppConstants.paddingMedium),
+                Text(
+                  'No transactions yet',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: AppTheme.textSecondaryColor,
+                  ),
+                ),
+                SizedBox(height: AppConstants.paddingSmall),
+                Text(
+                  'Transactions will appear here',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppTheme.textSecondaryColor,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppConstants.paddingMedium,
+          ),
+          itemCount: transactions.length,
+          itemBuilder: (context, index) {
+            final transaction = transactions[index];
+            return _buildTransactionRow(context, transaction);
+          },
+        );
       },
     );
   }
@@ -212,43 +255,5 @@ class AccountStatementScreen extends StatelessWidget {
     );
   }
 
-  List<Transaction> _getMockTransactions() {
-    return [
-      Transaction(
-        id: '1',
-        amount: 500.0,
-        description: 'Salary',
-        type: TransactionType.credit,
-        date: DateTime.now().subtract(const Duration(days: 2)),
-      ),
-      Transaction(
-        id: '2',
-        amount: 45.50,
-        description: 'Groceries',
-        type: TransactionType.debit,
-        date: DateTime.now().subtract(const Duration(days: 1)),
-      ),
-      Transaction(
-        id: '3',
-        amount: 120.0,
-        description: 'Restaurant',
-        type: TransactionType.debit,
-        date: DateTime.now().subtract(const Duration(hours: 6)),
-      ),
-      Transaction(
-        id: '4',
-        amount: 200.0,
-        description: 'Freelance work',
-        type: TransactionType.credit,
-        date: DateTime.now().subtract(const Duration(hours: 2)),
-      ),
-      Transaction(
-        id: '5',
-        amount: 15.0,
-        description: 'Coffee',
-        type: TransactionType.debit,
-        date: DateTime.now().subtract(const Duration(minutes: 30)),
-      ),
-    ];
-  }
+
 }
