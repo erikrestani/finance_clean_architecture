@@ -1,9 +1,9 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/login_credentials.dart';
-import '../../domain/entities/user.dart';
-import '../../domain/repositories/auth_repository_impl.dart';
-import '../../domain/repositories/auth_repository.dart';
+import '../../../domain/entities/login_credentials.dart';
+import '../../../domain/entities/user.dart';
+import '../../../domain/repositories/auth_repository_impl.dart';
+import '../../../domain/repositories/auth_repository.dart';
 
 part 'auth_controller.g.dart';
 

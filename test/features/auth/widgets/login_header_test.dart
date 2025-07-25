@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:finance_clean_architecture/core/constants/app_constants.dart';
-import 'package:finance_clean_architecture/presentation/widgets/login_header.dart';
+import 'package:finance_clean_architecture/features/auth/widgets/login_header.dart';
 
 void main() {
   group('LoginHeader', () {

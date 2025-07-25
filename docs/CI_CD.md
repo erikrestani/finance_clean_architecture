@@ -21,8 +21,7 @@ We use GitHub Actions for CI/CD with the following workflows:
 - **Test**: Runs code analysis, tests, and uploads coverage
 - **Build Android**: Creates APK for Android
 - **Build iOS**: Creates iOS build
-- **Deploy Android**: Uploads to Firebase App Distribution (optional)
-- **Deploy iOS**: Uploads to TestFlight (optional)
+- **Build Artifacts**: Creates artifacts for manual distribution
 
 ### 2. Development Checks
 
@@ -36,22 +35,17 @@ We use GitHub Actions for CI/CD with the following workflows:
 
 ## Setup Instructions
 
-### 1. Required Secrets
+### 1. Distribution Options
 
-Add these secrets to your GitHub repository settings:
+#### Free Options (Current Setup):
+- **Android**: Manual APK distribution via artifacts
+- **iOS**: Manual distribution via Xcode
+- **TestFlight**: Requires Apple Developer Account ($99/year)
+- **Firebase App Distribution**: Free for up to 100 testers
 
-#### For Firebase App Distribution:
-```
-FIREBASE_APP_ID=your_firebase_app_id
-FIREBASE_SERVICE_ACCOUNT=your_service_account_json
-```
-
-#### For TestFlight:
-```
-APP_STORE_CONNECT_API_KEY=your_api_key
-APP_STORE_CONNECT_API_KEY_ID=your_key_id
-APP_STORE_CONNECT_ISSUER_ID=your_issuer_id
-```
+#### Paid Options:
+- **Apple Developer Account**: $99/year for TestFlight and App Store
+- **Google Play Console**: Free for internal testing
 
 ### 2. Codecov Integration
 

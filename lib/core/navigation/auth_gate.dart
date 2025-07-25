@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../presentation/screens/login_screen.dart';
-import '../../presentation/screens/home_screen.dart';
-import '../../presentation/controllers/auth_controller.dart';
+import '../../features/auth/screens/login_screen.dart';
+import '../../features/dashboard/screens/home_screen.dart';
+import '../../features/auth/controllers/auth_controller.dart';
 
 class AuthGate extends ConsumerWidget {
   const AuthGate({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:finance_clean_architecture/presentation/screens/login_screen.dart';
+import 'package:finance_clean_architecture/features/auth/screens/login_screen.dart';
 
 void main() {
   group('LoginPage', () {
