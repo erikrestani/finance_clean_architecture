@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../features/auth/screens/login_screen.dart';
-import '../../features/dashboard/screens/home_screen.dart';
+import '../../features/dashboard/screens/dashboard_screen.dart';
 
 class AppRouter {
   static const String login = '/login';
@@ -14,7 +14,7 @@ class AppRouter {
         );
       case home:
         return MaterialPageRoute(
-          builder: (_) => const HomeScreen(),
+          builder: (_) => const DashboardScreen(),
         );
       default:
         return MaterialPageRoute(
