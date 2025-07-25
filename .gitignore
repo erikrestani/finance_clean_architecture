@@ -96,6 +96,5 @@ coverage/
 .env.test.local
 .env.production.local
 
-# Generated files
-*.g.dart
+# Generated files (but keep .g.dart files)
 *.freezed.dart
