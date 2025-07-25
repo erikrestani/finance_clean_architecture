@@ -12,36 +12,33 @@ String _$financeRepositoryHash() => r'137facf48c357d6debcc1747bb999d0020ba74da';
 @ProviderFor(financeRepository)
 final financeRepositoryProvider =
     AutoDisposeProvider<FinanceRepository>.internal(
-      financeRepository,
-      name: r'financeRepositoryProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$financeRepositoryHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  financeRepository,
+  name: r'financeRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$financeRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef FinanceRepositoryRef = AutoDisposeProviderRef<FinanceRepository>;
 String _$dashboardControllerHash() =>
-    r'b44c44ab2de933400a1832672167266caf369968';
+    r'9e411fd18045be452e56161a6bd8df958672152f';
 
 /// See also [DashboardController].
 @ProviderFor(DashboardController)
-final dashboardControllerProvider =
-    AutoDisposeAsyncNotifierProvider<
-      DashboardController,
-      FinancialSummary
-    >.internal(
-      DashboardController.new,
-      name: r'dashboardControllerProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$dashboardControllerHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+final dashboardControllerProvider = AutoDisposeAsyncNotifierProvider<
+    DashboardController, FinancialSummary>.internal(
+  DashboardController.new,
+  name: r'dashboardControllerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$dashboardControllerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$DashboardController = AutoDisposeAsyncNotifier<FinancialSummary>;
 // ignore_for_file: type=lint

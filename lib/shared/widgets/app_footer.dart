@@ -7,13 +7,13 @@ class AppFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
-        const Divider(),
-        const SizedBox(height: AppConstants.paddingMedium),
+        Divider(),
+        SizedBox(height: AppConstants.paddingMedium),
         Text(
           '© 2025 ${AppConstants.appName}. All rights reserved.',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 12,
             color: AppTheme.textSecondaryColor,
           ),

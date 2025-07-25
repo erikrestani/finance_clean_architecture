@@ -25,7 +25,7 @@ class SavingsInsightCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.lightbulb_outline,
                 color: AppTheme.primaryColor,
                 size: 24,
@@ -75,7 +75,7 @@ class SavingsInsightCard extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
+                const Icon(
                   Icons.trending_up,
                   color: AppTheme.secondaryColor,
                   size: 16,

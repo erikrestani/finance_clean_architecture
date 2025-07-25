@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/initial_data.dart';
 import '../../../domain/entities/login_credentials.dart';
 import '../../../domain/entities/user.dart';
 import '../../../domain/repositories/auth_repository_impl.dart';
@@ -22,16 +23,28 @@ class AuthController extends _$AuthController {
     return await repository.getCurrentUser();
   }
 
-  Future<void> login(String email, String password) async {
+  Future<bool> login(String email, String password) async {
     state = const AsyncValue.loading();
 
     try {
       final repository = ref.read(authRepositoryProvider);
       final credentials = LoginCredentials(email: email, password: password);
       final user = await repository.login(credentials);
+
+      await InitialData.addSampleData();
+
       state = AsyncValue.data(user);
+      return true;
     } catch (error, stackTrace) {
-      state = AsyncValue.error(error, stackTrace);
+      if (error.toString().toLowerCase().contains('invalid') ||
+          error.toString().toLowerCase().contains('credentials') ||
+          error.toString().toLowerCase().contains('unauthorized')) {
+        state = const AsyncValue.data(null);
+        return false;
+      } else {
+        state = AsyncValue.error(error, stackTrace);
+        return false;
+      }
     }
   }
 
@@ -55,6 +68,7 @@ class AuthController extends _$AuthController {
 
   bool get isError => state.hasError;
   bool get isSuccess => state.hasValue && state.value != null;
+  bool get isLoading => state.isLoading;
 
   void showWelcomeMessage(BuildContext context) {
     final message = getWelcomeMessage();

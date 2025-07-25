@@ -43,19 +43,23 @@ class AccountRepositoryImpl implements AccountRepository {
   }
 
   @override
-  Future<Account> addBalance(String accountId, double amount, String description) async {
+  Future<Account> addBalance(
+    String accountId,
+    double amount,
+    String description,
+  ) async {
     final accounts = await _localStorage.getAccounts();
     final account = accounts.firstWhere((a) => a.id == accountId);
     final updatedAccount = account.copyWith(
       balance: account.balance + amount,
       updatedAt: DateTime.now(),
     );
-    
+
     // Update account
     final index = accounts.indexWhere((a) => a.id == accountId);
     accounts[index] = updatedAccount;
     await _localStorage.saveAccounts(accounts);
-    
+
     // Add transaction
     final transaction = Transaction(
       id: const Uuid().v4(),
@@ -65,30 +69,28 @@ class AccountRepositoryImpl implements AccountRepository {
       date: DateTime.now(),
     );
     await _localStorage.addTransaction(accountId, transaction);
-    
+
     return updatedAccount;
   }
 
   @override
-  Future<Account> subtractBalance(String accountId, double amount, String description) async {
+  Future<Account> subtractBalance(
+    String accountId,
+    double amount,
+    String description,
+  ) async {
     final accounts = await _localStorage.getAccounts();
     final account = accounts.firstWhere((a) => a.id == accountId);
-    
-    if (account.balance < amount) {
-      throw Exception('Insufficient balance');
-    }
-    
+
     final updatedAccount = account.copyWith(
       balance: account.balance - amount,
       updatedAt: DateTime.now(),
     );
-    
-    // Update account
+
     final index = accounts.indexWhere((a) => a.id == accountId);
     accounts[index] = updatedAccount;
     await _localStorage.saveAccounts(accounts);
-    
-    // Add transaction
+
     final transaction = Transaction(
       id: const Uuid().v4(),
       amount: amount,
@@ -97,7 +99,7 @@ class AccountRepositoryImpl implements AccountRepository {
       date: DateTime.now(),
     );
     await _localStorage.addTransaction(accountId, transaction);
-    
+
     return updatedAccount;
   }
 

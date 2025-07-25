@@ -52,9 +52,7 @@ class ExpenseSummaryCard extends StatelessWidget {
                 context,
                 'Balance',
                 '\$${summary.balance.toStringAsFixed(2)}',
-                summary.balance >= 0
-                    ? AppTheme.secondaryColor
-                    : AppTheme.errorColor,
+                summary.balance >= 0 ? Colors.green : AppTheme.errorColor,
                 summary.balance >= 0
                     ? Icons.account_balance_wallet
                     : Icons.warning,

@@ -3,6 +3,7 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../domain/entities/financial_summary.dart';
 import '../../../../domain/entities/expense.dart';
+import '../../../../domain/entities/transaction_category.dart';
 
 class CategoryExpenseCard extends StatelessWidget {
   final FinancialSummary summary;
@@ -118,18 +119,18 @@ class CategoryExpenseCard extends StatelessWidget {
 
   Color _getCategoryColor(ExpenseCategory category) {
     switch (category) {
-      case ExpenseCategory.leisure:
+      case ExpenseCategory.food:
         return Colors.orange;
-      case ExpenseCategory.bills:
+      case ExpenseCategory.transport:
         return Colors.blue;
-      case ExpenseCategory.emergency:
+      case ExpenseCategory.leisure:
+        return Colors.purple;
+      case ExpenseCategory.bills:
         return Colors.red;
+      case ExpenseCategory.emergency:
+        return Colors.red.shade800;
       case ExpenseCategory.savings:
         return Colors.green;
-      case ExpenseCategory.food:
-        return Colors.purple;
-      case ExpenseCategory.transport:
-        return Colors.teal;
       case ExpenseCategory.health:
         return Colors.pink;
       case ExpenseCategory.education:
@@ -141,47 +142,47 @@ class CategoryExpenseCard extends StatelessWidget {
 
   IconData _getCategoryIcon(ExpenseCategory category) {
     switch (category) {
+      case ExpenseCategory.food:
+        return TransactionCategory.food.icon;
+      case ExpenseCategory.transport:
+        return TransactionCategory.transport.icon;
       case ExpenseCategory.leisure:
-        return Icons.movie;
+        return TransactionCategory.entertainment.icon;
       case ExpenseCategory.bills:
-        return Icons.receipt;
+        return TransactionCategory.bills.icon;
       case ExpenseCategory.emergency:
         return Icons.emergency;
       case ExpenseCategory.savings:
         return Icons.savings;
-      case ExpenseCategory.food:
-        return Icons.restaurant;
-      case ExpenseCategory.transport:
-        return Icons.directions_car;
       case ExpenseCategory.health:
-        return Icons.health_and_safety;
+        return TransactionCategory.health.icon;
       case ExpenseCategory.education:
-        return Icons.school;
+        return TransactionCategory.education.icon;
       case ExpenseCategory.other:
-        return Icons.more_horiz;
+        return TransactionCategory.other.icon;
     }
   }
 
   String _getCategoryName(ExpenseCategory category) {
     switch (category) {
+      case ExpenseCategory.food:
+        return TransactionCategory.food.label;
+      case ExpenseCategory.transport:
+        return TransactionCategory.transport.label;
       case ExpenseCategory.leisure:
-        return 'Leisure';
+        return TransactionCategory.entertainment.label;
       case ExpenseCategory.bills:
-        return 'Bills';
+        return TransactionCategory.bills.label;
       case ExpenseCategory.emergency:
         return 'Emergency';
       case ExpenseCategory.savings:
         return 'Savings';
-      case ExpenseCategory.food:
-        return 'Food';
-      case ExpenseCategory.transport:
-        return 'Transport';
       case ExpenseCategory.health:
-        return 'Health';
+        return TransactionCategory.health.label;
       case ExpenseCategory.education:
-        return 'Education';
+        return TransactionCategory.education.label;
       case ExpenseCategory.other:
-        return 'Other';
+        return TransactionCategory.other.label;
     }
   }
 }

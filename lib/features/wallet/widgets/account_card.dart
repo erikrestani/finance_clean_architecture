@@ -21,12 +21,23 @@ class AccountCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isNegativeBalance = account.balance < 0;
+    final balanceColor = isNegativeBalance
+        ? AppTheme.errorColor
+        : AppTheme.textPrimaryColor;
+    final accountTypeText = _getAccountTypeText(account.accountType);
+
     return Container(
       padding: const EdgeInsets.all(AppConstants.paddingMedium),
       decoration: BoxDecoration(
         color: AppTheme.surfaceColor,
         borderRadius: BorderRadius.circular(AppConstants.radiusMedium),
-        border: Border.all(color: AppTheme.borderColor),
+        border: Border.all(
+          color: isNegativeBalance
+              ? AppTheme.errorColor.withValues(alpha: 0.3)
+              : AppTheme.borderColor,
+          width: isNegativeBalance ? 2 : 1,
+        ),
         boxShadow: [
           BoxShadow(
             color: AppTheme.borderColor.withValues(alpha: 0.1),
@@ -36,30 +47,48 @@ class AccountCard extends StatelessWidget {
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(
-                onPressed: () => _showDeleteDialog(context, account),
-                icon: Icon(
-                  Icons.delete_outline,
-                  color: AppTheme.errorColor,
-                  size: 20,
-                ),
-                tooltip: 'Delete Account',
-              ),
               Expanded(
-                child: Text(
-                  account.name,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: AppTheme.textPrimaryColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      account.name,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: AppTheme.textPrimaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: AppConstants.paddingSmall),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppConstants.paddingSmall,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _getAccountTypeColor(
+                          account.accountType,
+                        ).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(
+                          AppConstants.radiusSmall,
+                        ),
+                      ),
+                      child: Text(
+                        accountTypeText,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: _getAccountTypeColor(account.accountType),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Row(
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
                     onPressed: () => _showBalanceDialog(
@@ -70,7 +99,7 @@ class AccountCard extends StatelessWidget {
                       AppTheme.secondaryColor,
                       onAddBalance,
                     ),
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.add_circle_outline,
                       color: AppTheme.secondaryColor,
                       size: 24,
@@ -86,7 +115,7 @@ class AccountCard extends StatelessWidget {
                       AppTheme.errorColor,
                       onSubtractBalance,
                     ),
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.remove_circle_outline,
                       color: AppTheme.errorColor,
                       size: 24,
@@ -98,7 +127,7 @@ class AccountCard extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: AppConstants.paddingMedium),
+          const SizedBox(height: AppConstants.paddingMedium),
           Row(
             children: [
               Container(
@@ -109,19 +138,28 @@ class AccountCard extends StatelessWidget {
                 ),
                 child: Icon(account.iconData, color: account.color, size: 24),
               ),
-              SizedBox(width: AppConstants.paddingMedium),
+              const SizedBox(width: AppConstants.paddingMedium),
               Expanded(
-                child: Text(
-                  'R\$ ${account.balance.toStringAsFixed(2)}',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: AppTheme.textPrimaryColor,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Row(
+                  children: [
+                    if (isNegativeBalance) ...[
+                      const Icon(Icons.warning, color: AppTheme.errorColor, size: 16),
+                      const SizedBox(width: AppConstants.paddingSmall),
+                    ],
+                    Text(
+                      'R\$ ${account.balance.toStringAsFixed(2)}',
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            color: balanceColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
                 ),
               ),
               IconButton(
                 onPressed: () => _navigateToStatement(context, account),
-                icon: Icon(
+                icon: const Icon(
                   Icons.arrow_forward_ios,
                   color: AppTheme.textSecondaryColor,
                   size: 16,
@@ -130,65 +168,36 @@ class AccountCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: AppConstants.paddingMedium),
+          const SizedBox(height: AppConstants.paddingMedium),
         ],
       ),
     );
   }
 
-  void _showDeleteDialog(BuildContext context, Account account) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Icon(
-              Icons.warning_amber_rounded,
-              color: AppTheme.errorColor,
-              size: 24,
-            ),
-            SizedBox(width: AppConstants.paddingSmall),
-            const Expanded(child: Text('Delete Account')),
-            IconButton(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: Icon(
-                Icons.close,
-                color: AppTheme.textSecondaryColor,
-                size: 20,
-              ),
-              tooltip: 'Close',
-            ),
-          ],
-        ),
-        content: Text(
-          'Are you sure you want to delete "${account.name}"? This action cannot be undone.',
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondaryColor),
-        ),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              onDeleteAccount?.call();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.errorColor,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
+  String _getAccountTypeText(AccountType accountType) {
+    switch (accountType) {
+      case AccountType.debit:
+        return 'Debit';
+      case AccountType.credit:
+        return 'Credit';
+      case AccountType.savings:
+        return 'Savings';
+      case AccountType.investment:
+        return 'Investment';
+    }
   }
 
-  void _navigateToStatement(BuildContext context, Account account) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => AccountStatementScreen(account: account),
-      ),
-    );
+  Color _getAccountTypeColor(AccountType accountType) {
+    switch (accountType) {
+      case AccountType.debit:
+        return AppTheme.primaryColor;
+      case AccountType.credit:
+        return AppTheme.errorColor;
+      case AccountType.savings:
+        return const Color(0xFF10B981);
+      case AccountType.investment:
+        return const Color(0xFFF59E0B);
+    }
   }
 
   void _showBalanceDialog(
@@ -207,6 +216,14 @@ class AccountCard extends StatelessWidget {
         icon: icon,
         color: color,
         onConfirm: onConfirm,
+      ),
+    );
+  }
+
+  void _navigateToStatement(BuildContext context, Account account) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AccountStatementScreen(account: account),
       ),
     );
   }

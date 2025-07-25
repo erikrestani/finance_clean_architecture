@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_theme.dart';
-import '../controllers/wallet_controller.dart';
+import '../../../domain/entities/account.dart';
+import '../../../presentation/providers/wallet_provider.dart';
 import '../widgets/total_balance_card.dart';
 import '../widgets/account_card.dart';
 import '../widgets/add_account_dialog.dart';
@@ -13,7 +14,7 @@ class WalletScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final accountsState = ref.watch(walletControllerProvider);
+    final accountsState = ref.watch(walletNotifierProvider);
     final totalBalanceState = ref.watch(totalBalanceProvider);
 
     return Scaffold(
@@ -28,17 +29,17 @@ class WalletScreen extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
-              SizedBox(height: AppConstants.paddingLarge),
+              const Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
+              const SizedBox(height: AppConstants.paddingLarge),
               Text(
                 'Error loading wallet',
                 style: Theme.of(
                   context,
                 ).textTheme.headlineSmall?.copyWith(color: AppTheme.errorColor),
               ),
-              SizedBox(height: AppConstants.paddingMedium),
+              const SizedBox(height: AppConstants.paddingMedium),
               ElevatedButton(
-                onPressed: () => ref.invalidate(walletControllerProvider),
+                onPressed: () => ref.invalidate(walletNotifierProvider),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.primaryColor,
                   foregroundColor: Colors.white,
@@ -61,12 +62,12 @@ class WalletScreen extends ConsumerWidget {
   Widget _buildContent(
     BuildContext context,
     WidgetRef ref,
-    List<dynamic> accounts,
+    List<Account> accounts,
     AsyncValue<double> totalBalanceState,
   ) {
     return RefreshIndicator(
       onRefresh: () async {
-        ref.invalidate(walletControllerProvider);
+        ref.invalidate(walletNotifierProvider);
         ref.invalidate(totalBalanceProvider);
       },
       color: AppTheme.primaryColor,
@@ -76,7 +77,7 @@ class WalletScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TotalBalanceCard(totalBalanceState: totalBalanceState),
-            SizedBox(height: AppConstants.paddingLarge),
+            const SizedBox(height: AppConstants.paddingLarge),
             Text(
               'Your Accounts',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -84,7 +85,7 @@ class WalletScreen extends ConsumerWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: AppConstants.paddingMedium),
+            const SizedBox(height: AppConstants.paddingMedium),
             if (accounts.isEmpty)
               const EmptyWalletState()
             else
@@ -135,7 +136,7 @@ class WalletScreen extends ConsumerWidget {
     double amount,
     String description,
   ) {
-    ref.read(walletControllerProvider.notifier).addBalance(accountId, amount, description);
+    ref.read(walletNotifierProvider.notifier).addBalance(accountId, amount, description);
   }
 
   void _subtractBalance(
@@ -146,11 +147,11 @@ class WalletScreen extends ConsumerWidget {
     String description,
   ) {
     ref
-        .read(walletControllerProvider.notifier)
+        .read(walletNotifierProvider.notifier)
         .subtractBalance(accountId, amount, description);
   }
 
   void _deleteAccount(BuildContext context, WidgetRef ref, String accountId) {
-    ref.read(walletControllerProvider.notifier).deleteAccount(accountId);
+    ref.read(walletNotifierProvider.notifier).deleteAccount(accountId);
   }
 }

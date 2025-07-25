@@ -11,7 +11,7 @@ class ReportScreen extends StatelessWidget {
         children: [
           Text('Report', style: Theme.of(context).textTheme.displaySmall),
           const SizedBox(height: 24),
-          Text('Expense and income visualization with static charts.'),
+          const Text('Expense and income visualization with static charts.'),
         ],
       ),
     );

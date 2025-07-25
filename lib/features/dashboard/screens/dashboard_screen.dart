@@ -9,6 +9,7 @@ import '../widgets/category_expense_card.dart';
 import '../widgets/recent_expenses_card.dart';
 import '../widgets/savings_insight_card.dart';
 import '../../wallet/screens/wallet_screen.dart';
+import '../../wallet/controllers/wallet_controller.dart';
 import '../../reports/screens/report_screen.dart';
 import '../../tips/screens/tips_screen.dart';
 
@@ -118,7 +119,7 @@ class DashboardContent extends ConsumerWidget {
     final dashboardState = ref.watch(dashboardControllerProvider);
 
     return dashboardState.when(
-      data: (summary) => _buildDashboardContent(context, summary),
+      data: (summary) => _buildDashboardContent(context, ref, summary),
       loading: () => const Center(
         child: CircularProgressIndicator(color: AppTheme.primaryColor),
       ),
@@ -126,15 +127,15 @@ class DashboardContent extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
-            SizedBox(height: AppConstants.paddingLarge),
+            const Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
+            const SizedBox(height: AppConstants.paddingLarge),
             Text(
               'Error loading dashboard',
               style: Theme.of(
                 context,
               ).textTheme.headlineSmall?.copyWith(color: AppTheme.errorColor),
             ),
-            SizedBox(height: AppConstants.paddingMedium),
+            const SizedBox(height: AppConstants.paddingMedium),
             ElevatedButton(
               onPressed: () {
                 ref.read(dashboardControllerProvider.notifier).refreshData();
@@ -151,9 +152,13 @@ class DashboardContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildDashboardContent(BuildContext context, summary) {
+  Widget _buildDashboardContent(BuildContext context, WidgetRef ref, summary) {
     return RefreshIndicator(
-      onRefresh: () async {},
+      onRefresh: () async {
+        ref.invalidate(dashboardControllerProvider);
+        ref.invalidate(walletControllerProvider);
+        ref.invalidate(totalBalanceProvider);
+      },
       color: AppTheme.primaryColor,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppConstants.paddingMedium),
@@ -161,11 +166,11 @@ class DashboardContent extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ExpenseSummaryCard(summary: summary),
-            SizedBox(height: AppConstants.paddingLarge),
+            const SizedBox(height: AppConstants.paddingLarge),
             SavingsInsightCard(summary: summary),
-            SizedBox(height: AppConstants.paddingLarge),
+            const SizedBox(height: AppConstants.paddingLarge),
             CategoryExpenseCard(summary: summary),
-            SizedBox(height: AppConstants.paddingLarge),
+            const SizedBox(height: AppConstants.paddingLarge),
             RecentExpensesCard(summary: summary),
           ],
         ),

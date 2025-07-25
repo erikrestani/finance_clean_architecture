@@ -30,9 +30,7 @@ class Transaction {
       id: json['id'] as String,
       amount: (json['amount'] as num).toDouble(),
       description: json['description'] as String,
-      type: TransactionType.values.firstWhere(
-        (e) => e.name == json['type'],
-      ),
+      type: TransactionType.values.firstWhere((e) => e.name == json['type']),
       date: DateTime.parse(json['date'] as String),
     );
   }

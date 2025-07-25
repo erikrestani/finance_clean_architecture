@@ -18,7 +18,7 @@ class MyApp extends ConsumerWidget {
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
       onGenerateRoute: AppRouter.generateRoute,
-      home: AuthGate(),
+      home: const AuthGate(),
     );
   }
 }

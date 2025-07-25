@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import '../../../domain/entities/account.dart';
 import '../../../domain/repositories/account_repository.dart';
 import '../../../domain/repositories/account_repository_impl.dart';
+import '../../dashboard/controllers/dashboard_controller.dart';
 
 part 'wallet_controller.g.dart';
 
@@ -26,6 +27,7 @@ class WalletController extends _$WalletController {
     required double initialBalance,
     required Color color,
     required IconData iconData,
+    required AccountType accountType,
   }) async {
     final repository = ref.read(accountRepositoryProvider);
 
@@ -35,34 +37,59 @@ class WalletController extends _$WalletController {
       balance: initialBalance,
       color: color,
       iconData: iconData,
+      accountType: accountType,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
 
     await repository.createAccount(newAccount);
     ref.invalidateSelf();
+
+    ref.invalidate(totalBalanceProvider);
+
+    ref.invalidate(dashboardControllerProvider);
   }
 
-          Future<void> addBalance(String accountId, double amount, String description) async {
-          if (amount <= 0) return;
-          
-          final repository = ref.read(accountRepositoryProvider);
-          await repository.addBalance(accountId, amount, description);
-          ref.invalidateSelf();
-        }
+  Future<void> addBalance(
+    String accountId,
+    double amount,
+    String description,
+  ) async {
+    if (amount <= 0) return;
 
-        Future<void> subtractBalance(String accountId, double amount, String description) async {
-          if (amount <= 0) return;
-          
-          final repository = ref.read(accountRepositoryProvider);
-          await repository.subtractBalance(accountId, amount, description);
-          ref.invalidateSelf();
-        }
+    final repository = ref.read(accountRepositoryProvider);
+    await repository.addBalance(accountId, amount, description);
+    ref.invalidateSelf();
+
+    ref.invalidate(totalBalanceProvider);
+
+    ref.invalidate(dashboardControllerProvider);
+  }
+
+  Future<void> subtractBalance(
+    String accountId,
+    double amount,
+    String description,
+  ) async {
+    if (amount <= 0) return;
+
+    final repository = ref.read(accountRepositoryProvider);
+    await repository.subtractBalance(accountId, amount, description);
+    ref.invalidateSelf();
+
+    ref.invalidate(totalBalanceProvider);
+
+    ref.invalidate(dashboardControllerProvider);
+  }
 
   Future<void> deleteAccount(String accountId) async {
     final repository = ref.read(accountRepositoryProvider);
     await repository.deleteAccount(accountId);
     ref.invalidateSelf();
+
+    ref.invalidate(totalBalanceProvider);
+
+    ref.invalidate(dashboardControllerProvider);
   }
 
   Future<void> updateAccount(Account account) async {

@@ -16,19 +16,19 @@ class EmptyWalletState extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(
+          const Icon(
             Icons.account_balance_wallet_outlined,
             size: 64,
             color: AppTheme.textSecondaryColor,
           ),
-          SizedBox(height: AppConstants.paddingMedium),
+          const SizedBox(height: AppConstants.paddingMedium),
           Text(
             'No accounts yet',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: AppTheme.textSecondaryColor,
             ),
           ),
-          SizedBox(height: AppConstants.paddingSmall),
+          const SizedBox(height: AppConstants.paddingSmall),
           Text(
             'Tap the + button to add your first account',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(

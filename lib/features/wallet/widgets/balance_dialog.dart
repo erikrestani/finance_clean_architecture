@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../domain/entities/transaction_category.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 
 class BalanceDialog extends StatefulWidget {
@@ -28,7 +29,9 @@ class _BalanceDialogState extends State<BalanceDialog> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
+  TransactionCategory? _selectedCategory;
   bool _isLoading = false;
+  bool _showCustomDescription = false;
 
   @override
   void dispose() {
@@ -43,11 +46,11 @@ class _BalanceDialogState extends State<BalanceDialog> {
       title: Row(
         children: [
           Icon(widget.icon, color: widget.color),
-          SizedBox(width: AppConstants.paddingSmall),
+          const SizedBox(width: AppConstants.paddingSmall),
           Expanded(child: Text(widget.title)),
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(
+            icon: const Icon(
               Icons.close,
               color: AppTheme.textSecondaryColor,
               size: 20,
@@ -67,12 +70,12 @@ class _BalanceDialogState extends State<BalanceDialog> {
                 color: AppTheme.textSecondaryColor,
               ),
             ),
-            SizedBox(height: AppConstants.paddingMedium),
+            const SizedBox(height: AppConstants.paddingMedium),
             CustomTextField(
               controller: _amountController,
               label: 'Amount',
               hint: '0.00',
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
               ],
@@ -87,13 +90,62 @@ class _BalanceDialogState extends State<BalanceDialog> {
                 return null;
               },
             ),
-            SizedBox(height: AppConstants.paddingMedium),
-            CustomTextField(
-              controller: _descriptionController,
-              label: 'Description (Optional)',
-              hint: 'e.g., Groceries, Salary, Coffee',
-              maxLines: 2,
-            ),
+            const SizedBox(height: AppConstants.paddingMedium),
+            if (widget.title.toLowerCase().contains('subtract')) ...[
+              DropdownButtonFormField<TransactionCategory>(
+                value: _selectedCategory,
+                decoration: const InputDecoration(
+                  labelText: 'Category',
+                  border: OutlineInputBorder(),
+                ),
+                hint: const Text('Select a category'),
+                items: TransactionCategory.values.map((category) {
+                  return DropdownMenuItem(
+                    value: category,
+                    child: Row(
+                      children: [
+                        Icon(category.icon, size: 20),
+                        const SizedBox(width: 8),
+                        Text(category.label),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedCategory = value;
+                    _showCustomDescription = value == TransactionCategory.other;
+                    if (!_showCustomDescription && value != null) {
+                      _descriptionController.text = value.label;
+                    } else {
+                      _descriptionController.clear();
+                    }
+                  });
+                },
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please select a category';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: AppConstants.paddingMedium),
+            ],
+            if (_showCustomDescription ||
+                !widget.title.toLowerCase().contains('subtract')) ...[
+              CustomTextField(
+                controller: _descriptionController,
+                label: 'Description',
+                hint: 'Enter transaction description',
+                maxLines: 2,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter a description';
+                  }
+                  return null;
+                },
+              ),
+            ],
           ],
         ),
       ),

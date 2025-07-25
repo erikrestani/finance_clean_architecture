@@ -9,7 +9,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<User> login(LoginCredentials credentials) async {
     await Future.delayed(const Duration(seconds: 2));
 
-    if (credentials.email == 'teste@teste.com' &&
+    if (credentials.email == 'test@test.com' &&
         credentials.password == '123456') {
       _currentUser = const User(
         id: '1',
@@ -20,6 +20,19 @@ class AuthRepositoryImpl implements AuthRepository {
     } else {
       throw Exception('Invalid credentials');
     }
+  }
+
+  @override
+  Future<User> register(String email, String password, String name) async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    // Mock registration logic
+    _currentUser = User(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      email: email,
+      name: name,
+    );
+    return _currentUser!;
   }
 
   @override

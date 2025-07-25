@@ -4,6 +4,7 @@ import '../../../domain/entities/financial_summary.dart';
 import '../../../domain/entities/expense.dart';
 import '../../../domain/repositories/finance_repository_impl.dart';
 import '../../../domain/repositories/finance_repository.dart';
+import '../../wallet/controllers/wallet_controller.dart';
 
 part 'dashboard_controller.g.dart';
 
@@ -23,6 +24,9 @@ class DashboardController extends _$DashboardController {
   Future<void> refreshData() async {
     state = const AsyncValue.loading();
     try {
+      ref.invalidate(walletControllerProvider);
+      ref.invalidate(totalBalanceProvider);
+
       final repository = ref.read(financeRepositoryProvider);
       final summary = await repository.getFinancialSummary();
       state = AsyncValue.data(summary);

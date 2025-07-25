@@ -26,18 +26,18 @@ class LoginHeader extends StatelessWidget {
           child: const Icon(Icons.lock_outline, size: 40, color: Colors.white),
         ),
         const SizedBox(height: AppConstants.paddingLarge),
-        Text(
+        const Text(
           AppConstants.loginTitle,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
             color: AppTheme.textPrimaryColor,
           ),
         ),
         const SizedBox(height: AppConstants.paddingSmall),
-        Text(
+        const Text(
           AppConstants.loginSubtitle,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
             color: AppTheme.textSecondaryColor,
           ),

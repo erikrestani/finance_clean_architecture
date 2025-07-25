@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/predefined_accounts.dart';
+import '../../../domain/entities/account.dart';
 import '../../../shared/widgets/custom_text_field.dart';
-import '../controllers/wallet_controller.dart';
+import '../../../presentation/providers/wallet_provider.dart';
 
 class AddAccountDialog extends ConsumerStatefulWidget {
   const AddAccountDialog({super.key});
@@ -13,39 +15,29 @@ class AddAccountDialog extends ConsumerStatefulWidget {
   ConsumerState<AddAccountDialog> createState() => _AddAccountDialogState();
 }
 
-class _AddAccountDialogState extends ConsumerState<AddAccountDialog> {
+class _AddAccountDialogState extends ConsumerState<AddAccountDialog>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
   final _balanceController = TextEditingController();
+  final _customNameController = TextEditingController();
 
-  Color _selectedColor = AppTheme.primaryColor;
-  IconData _selectedIcon = Icons.account_balance_wallet;
+  late TabController _tabController;
+  PredefinedAccount? _selectedAccount;
   bool _isLoading = false;
+  bool _isCustomAccount = false;
 
-  final List<Color> _colorOptions = [
-    AppTheme.primaryColor,
-    AppTheme.secondaryColor,
-    const Color(0xFFF59E0B), 
-    const Color(0xFFEF4444), 
-    const Color(0xFF3B82F6), 
-    const Color(0xFFEC4899), 
-  ];
-
-  final List<IconData> _iconOptions = [
-    Icons.account_balance_wallet,
-    Icons.credit_card,
-    Icons.account_balance,
-    Icons.savings,
-    Icons.payment,
-    Icons.account_circle,
-    Icons.business,
-    Icons.home,
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    _balanceController.text = '0.00';
+  }
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _tabController.dispose();
     _balanceController.dispose();
+    _customNameController.dispose();
     super.dispose();
   }
 
@@ -57,7 +49,7 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog> {
           const Expanded(child: Text('New Account')),
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(
+            icon: const Icon(
               Icons.close,
               color: AppTheme.textSecondaryColor,
               size: 20,
@@ -66,138 +58,80 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog> {
           ),
         ],
       ),
-      content: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CustomTextField(
-                controller: _nameController,
-                label: 'Account Name',
-                hint: 'e.g., Nubank, Money, Savings',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter account name';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: AppConstants.paddingMedium),
-              CustomTextField(
-                controller: _balanceController,
-                label: 'Initial Balance',
-                hint: '0.00',
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TabBar(
+              controller: _tabController,
+              labelColor: AppTheme.primaryColor,
+              unselectedLabelColor: AppTheme.textSecondaryColor,
+              indicatorColor: AppTheme.primaryColor,
+              tabs: const [
+                Tab(text: 'Debit'),
+                Tab(text: 'Credit'),
+                Tab(text: 'Savings'),
+              ],
+            ),
+            const SizedBox(height: AppConstants.paddingMedium),
+            Flexible(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildAccountTypeTab(PredefinedAccounts.debitAccounts),
+                  _buildAccountTypeTab(PredefinedAccounts.creditAccounts),
+                  _buildAccountTypeTab(PredefinedAccounts.savingsAccounts),
                 ],
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter initial balance';
-                  }
-                  final balance = double.tryParse(value);
-                  if (balance == null || balance < 0) {
-                    return 'Please enter a valid balance';
-                  }
-                  return null;
-                },
               ),
-              SizedBox(height: AppConstants.paddingMedium),
-
-              // Color Selection
-              Text(
-                'Choose Color',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: AppTheme.textPrimaryColor,
-                  fontWeight: FontWeight.w600,
-                ),
+            ),
+            const SizedBox(height: AppConstants.paddingMedium),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  if (_isCustomAccount) ...[
+                    CustomTextField(
+                      controller: _customNameController,
+                      label: 'Account Name',
+                      hint: 'Enter custom account name',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter account name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: AppConstants.paddingMedium),
+                  ],
+                  CustomTextField(
+                    controller: _balanceController,
+                    label: 'Initial Balance',
+                    hint: '0.00',
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'^-?\d*\.?\d{0,2}')),
+                    ],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter initial balance';
+                      }
+                      final balance = double.tryParse(value);
+                      if (balance == null) {
+                        return 'Please enter a valid balance';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
               ),
-              SizedBox(height: AppConstants.paddingSmall),
-              Wrap(
-                spacing: AppConstants.paddingSmall,
-                children: _colorOptions
-                    .map(
-                      (color) => GestureDetector(
-                        onTap: () => setState(() => _selectedColor = color),
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: color,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: _selectedColor == color
-                                  ? AppTheme.textPrimaryColor
-                                  : Colors.transparent,
-                              width: 3,
-                            ),
-                          ),
-                          child: _selectedColor == color
-                              ? const Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                  size: 20,
-                                )
-                              : null,
-                        ),
-                      ),
-                    )
-                    .toList(),
-              ),
-              SizedBox(height: AppConstants.paddingMedium),
-
-              // Icon Selection
-              Text(
-                'Choose Icon',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: AppTheme.textPrimaryColor,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: AppConstants.paddingSmall),
-              Wrap(
-                spacing: AppConstants.paddingSmall,
-                children: _iconOptions
-                    .map(
-                      (icon) => GestureDetector(
-                        onTap: () => setState(() => _selectedIcon = icon),
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: _selectedIcon == icon
-                                ? _selectedColor.withValues(alpha: 0.1)
-                                : AppTheme.inputBackgroundColor,
-                            borderRadius: BorderRadius.circular(
-                              AppConstants.radiusSmall,
-                            ),
-                            border: Border.all(
-                              color: _selectedIcon == icon
-                                  ? _selectedColor
-                                  : AppTheme.borderColor,
-                              width: 2,
-                            ),
-                          ),
-                          child: Icon(
-                            icon,
-                            color: _selectedIcon == icon
-                                ? _selectedColor
-                                : AppTheme.textSecondaryColor,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       actions: [
         ElevatedButton(
-          onPressed: _isLoading ? null : _handleCreateAccount,
+          onPressed: _isLoading || _selectedAccount == null ? null : _handleCreateAccount,
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.primaryColor,
             foregroundColor: Colors.white,
@@ -217,30 +151,157 @@ class _AddAccountDialogState extends ConsumerState<AddAccountDialog> {
     );
   }
 
+  Widget _buildAccountTypeTab(List<PredefinedAccount> accounts) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 1.2,
+        crossAxisSpacing: AppConstants.paddingSmall,
+        mainAxisSpacing: AppConstants.paddingSmall,
+      ),
+      itemCount: accounts.length + 1,
+      itemBuilder: (context, index) {
+        if (index == accounts.length) {
+          return _buildCustomAccountCard();
+        }
+        return _buildPredefinedAccountCard(accounts[index]);
+      },
+    );
+  }
+
+  Widget _buildPredefinedAccountCard(PredefinedAccount account) {
+    final isSelected = _selectedAccount == account;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedAccount = account;
+          _isCustomAccount = false;
+        });
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected ? account.color.withValues(alpha: 0.1) : AppTheme.surfaceColor,
+          borderRadius: BorderRadius.circular(AppConstants.radiusMedium),
+          border: Border.all(
+            color: isSelected ? account.color : AppTheme.borderColor,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              account.icon,
+              color: account.color,
+              size: 32,
+            ),
+            const SizedBox(height: AppConstants.paddingSmall),
+            Text(
+              account.name,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppTheme.textPrimaryColor,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            if (account.bankName != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                account.bankName!,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppTheme.textSecondaryColor,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCustomAccountCard() {
+    final isSelected = _isCustomAccount;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _isCustomAccount = true;
+          _selectedAccount = null;
+        });
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected ? AppTheme.primaryColor.withValues(alpha: 0.1) : AppTheme.surfaceColor,
+          borderRadius: BorderRadius.circular(AppConstants.radiusMedium),
+          border: Border.all(
+            color: isSelected ? AppTheme.primaryColor : AppTheme.borderColor,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.add_circle_outline,
+              color: isSelected ? AppTheme.primaryColor : AppTheme.textSecondaryColor,
+              size: 32,
+            ),
+            const SizedBox(height: AppConstants.paddingSmall),
+            Text(
+              'Custom',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppTheme.textPrimaryColor,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _handleCreateAccount() async {
     if (!_formKey.currentState!.validate()) return;
+    if (_selectedAccount == null && !_isCustomAccount) return;
 
     setState(() => _isLoading = true);
 
     try {
-      final name = _nameController.text.trim();
       final balance = double.parse(_balanceController.text);
+      String accountName;
+      Color accountColor;
+      IconData accountIcon;
+      AccountType accountType;
+
+      if (_isCustomAccount) {
+        accountName = _customNameController.text.trim();
+        accountColor = AppTheme.primaryColor;
+        accountIcon = Icons.account_balance_wallet;
+        accountType = AccountType.debit;
+      } else {
+        accountName = _selectedAccount!.name;
+        accountColor = _selectedAccount!.color;
+        accountIcon = _selectedAccount!.icon;
+        accountType = _selectedAccount!.accountType;
+      }
 
       await ref
-          .read(walletControllerProvider.notifier)
+          .read(walletNotifierProvider.notifier)
           .addAccount(
-            name: name,
+            name: accountName,
             initialBalance: balance,
-            color: _selectedColor,
-            iconData: _selectedIcon,
+            color: accountColor,
+            iconData: accountIcon,
+            accountType: accountType,
           );
 
       if (!mounted) return;
       Navigator.of(context).pop();
-      _showSuccessMessage(name);
+      _showSuccessMessage(accountName);
     } catch (e) {
       if (!mounted) return;
-
       _showErrorMessage(e.toString());
     } finally {
       if (mounted) {

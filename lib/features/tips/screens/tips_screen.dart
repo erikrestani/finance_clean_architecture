@@ -11,7 +11,7 @@ class TipsScreen extends StatelessWidget {
         children: [
           Text('Tips', style: Theme.of(context).textTheme.displaySmall),
           const SizedBox(height: 24),
-          Text('Static content with financial tips.'),
+          const Text('Static content with financial tips.'),
         ],
       ),
     );

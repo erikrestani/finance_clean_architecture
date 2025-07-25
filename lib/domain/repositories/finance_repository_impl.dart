@@ -1,78 +1,88 @@
 import '../entities/expense.dart';
 import '../entities/financial_summary.dart';
+import '../entities/transaction.dart';
 import 'finance_repository.dart';
+import 'local_storage_repository.dart';
 
 class FinanceRepositoryImpl implements FinanceRepository {
-  final List<Expense> _expenses = [
-    Expense(
-      id: '1',
-      title: 'Netflix Subscription',
-      amount: 29.90,
-      category: ExpenseCategory.leisure,
-      date: DateTime(2024, 1, 15),
-    ),
-    Expense(
-      id: '2',
-      title: 'Electricity Bill',
-      amount: 150.00,
-      category: ExpenseCategory.bills,
-      date: DateTime(2024, 1, 10),
-    ),
-    Expense(
-      id: '3',
-      title: 'Car Repair',
-      amount: 500.00,
-      category: ExpenseCategory.emergency,
-      date: DateTime(2024, 1, 8),
-    ),
-    Expense(
-      id: '4',
-      title: 'Savings Transfer',
-      amount: 1000.00,
-      category: ExpenseCategory.savings,
-      date: DateTime(2024, 1, 5),
-    ),
-    Expense(
-      id: '5',
-      title: 'Restaurant',
-      amount: 80.00,
-      category: ExpenseCategory.food,
-      date: DateTime(2024, 1, 12),
-    ),
-    Expense(
-      id: '6',
-      title: 'Uber Ride',
-      amount: 25.00,
-      category: ExpenseCategory.transport,
-      date: DateTime(2024, 1, 14),
-    ),
-  ];
+  final LocalStorageRepository _localStorage = LocalStorageRepositoryImpl();
 
   @override
   Future<FinancialSummary> getFinancialSummary() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    final accounts = await _localStorage.getAccounts();
 
-    final totalExpenses = _expenses.fold(
-      0.0,
-      (sum, expense) => sum + expense.amount,
-    );
-    final totalIncome = 5000.0;
-    final savings = _expenses
-        .where((e) => e.category == ExpenseCategory.savings)
-        .fold(0.0, (sum, expense) => sum + expense.amount);
-
-    final leisureExpenses = _expenses
-        .where((e) => e.category == ExpenseCategory.leisure)
-        .fold(0.0, (sum, expense) => sum + expense.amount);
-    final potentialSavings = leisureExpenses * 0.5;
-
-    final expensesByCategory = <ExpenseCategory, double>{};
-    for (final expense in _expenses) {
-      expensesByCategory[expense.category] =
-          (expensesByCategory[expense.category] ?? 0) + expense.amount;
+    if (accounts.isEmpty) {
+      return const FinancialSummary(
+        totalExpenses: 0.0,
+        totalIncome: 0.0,
+        savings: 0.0,
+        potentialSavings: 0.0,
+        expensesByCategory: <ExpenseCategory, double>{},
+        recentExpenses: <Expense>[],
+        totalBalance: 0.0,
+      );
     }
 
-    final recentExpenses = _expenses.take(5).toList();
+    final totalBalance = accounts.fold(
+      0.0,
+      (sum, account) => sum + account.balance,
+    );
+
+    final allTransactions = <Transaction>[];
+    for (final account in accounts) {
+      final transactions = await _localStorage.getTransactions(account.id);
+      allTransactions.addAll(transactions);
+    }
+
+    final totalIncome = allTransactions
+        .where((t) => t.type == TransactionType.credit)
+        .fold(0.0, (sum, transaction) => sum + transaction.amount);
+
+    final totalExpenses = allTransactions
+        .where((t) => t.type == TransactionType.debit)
+        .fold(0.0, (sum, transaction) => sum + transaction.amount);
+
+    final savings = totalIncome;
+
+    final leisureExpenses = allTransactions
+        .where(
+          (t) =>
+              t.type == TransactionType.debit &&
+              _isLeisureExpense(t.description),
+        )
+        .fold(0.0, (sum, transaction) => sum + transaction.amount);
+    final potentialSavings = leisureExpenses * 0.3;
+
+    final expensesByCategory = <ExpenseCategory, double>{};
+
+    for (final category in ExpenseCategory.values) {
+      expensesByCategory[category] = 0.0;
+    }
+
+    for (final transaction in allTransactions.where(
+      (t) => t.type == TransactionType.debit,
+    )) {
+      final category = _categorizeTransaction(transaction);
+      expensesByCategory[category] =
+          (expensesByCategory[category] ?? 0) + transaction.amount;
+    }
+
+    final recentTransactions =
+        allTransactions.where((t) => t.type == TransactionType.debit).toList()
+          ..sort((a, b) => b.date.compareTo(a.date));
+
+    final recentExpenses = recentTransactions
+        .take(5)
+        .map(
+          (t) => Expense(
+            id: t.id,
+            title: t.description.isNotEmpty ? t.description : 'Transaction',
+            amount: t.amount,
+            category: _categorizeTransaction(t),
+            date: t.date,
+          ),
+        )
+        .toList();
 
     return FinancialSummary(
       totalExpenses: totalExpenses,
@@ -81,39 +91,104 @@ class FinanceRepositoryImpl implements FinanceRepository {
       potentialSavings: potentialSavings,
       expensesByCategory: expensesByCategory,
       recentExpenses: recentExpenses,
+      totalBalance: totalBalance,
     );
   }
 
   @override
   Future<List<Expense>> getExpenses() async {
-    await Future.delayed(const Duration(milliseconds: 300));
-    return _expenses;
+    final accounts = await _localStorage.getAccounts();
+    final allTransactions = <Transaction>[];
+
+    for (final account in accounts) {
+      final transactions = await _localStorage.getTransactions(account.id);
+      allTransactions.addAll(
+        transactions.where((t) => t.type == TransactionType.debit),
+      );
+    }
+
+    return allTransactions
+        .map(
+          (t) => Expense(
+            id: t.id,
+            title: t.description.isNotEmpty ? t.description : 'Transaction',
+            amount: t.amount,
+            category: _categorizeTransaction(t),
+            date: t.date,
+          ),
+        )
+        .toList();
   }
 
   @override
   Future<List<Expense>> getExpensesByCategory(ExpenseCategory category) async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    return _expenses.where((expense) => expense.category == category).toList();
+    final expenses = await getExpenses();
+    return expenses.where((expense) => expense.category == category).toList();
   }
 
   @override
-  Future<void> addExpense(Expense expense) async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    _expenses.add(expense);
-  }
+  Future<void> addExpense(Expense expense) async {}
 
   @override
-  Future<void> updateExpense(Expense expense) async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    final index = _expenses.indexWhere((e) => e.id == expense.id);
-    if (index != -1) {
-      _expenses[index] = expense;
+  Future<void> updateExpense(Expense expense) async {}
+
+  @override
+  Future<void> deleteExpense(String id) async {}
+
+  bool _isLeisureExpense(String description) {
+    final desc = description.toLowerCase();
+    return desc.contains('entertainment') ||
+        desc.contains('coffee') ||
+        desc.contains('shopping') ||
+        desc.contains('travel') ||
+        desc.contains('restaurant') ||
+        desc.contains('movie') ||
+        desc.contains('game') ||
+        desc.contains('leisure') ||
+        desc.contains('bar') ||
+        desc.contains('club') ||
+        desc.contains('amazon') ||
+        desc.contains('netflix') ||
+        desc.contains('spotify');
+  }
+
+  ExpenseCategory _categorizeTransaction(Transaction transaction) {
+    final description = transaction.description.toLowerCase();
+
+    if (description.contains('food') || description.contains('groceries')) {
+      return ExpenseCategory.food;
     }
-  }
 
-  @override
-  Future<void> deleteExpense(String id) async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    _expenses.removeWhere((expense) => expense.id == id);
+    if (description.contains('transport') || description.contains('travel')) {
+      return ExpenseCategory.transport;
+    }
+
+    if (description.contains('entertainment') ||
+        description.contains('movie') ||
+        description.contains('game')) {
+      return ExpenseCategory.leisure;
+    }
+
+    if (description.contains('shopping')) {
+      return ExpenseCategory.leisure;
+    }
+
+    if (description.contains('bills') || description.contains('receipt')) {
+      return ExpenseCategory.bills;
+    }
+
+    if (description.contains('health') || description.contains('medical')) {
+      return ExpenseCategory.health;
+    }
+
+    if (description.contains('education') || description.contains('school')) {
+      return ExpenseCategory.education;
+    }
+
+    if (description.contains('coffee')) {
+      return ExpenseCategory.leisure;
+    }
+
+    return ExpenseCategory.other;
   }
 }
